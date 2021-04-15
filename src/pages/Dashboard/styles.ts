@@ -74,6 +74,7 @@ export const Repositories = styled.div`
       border-radius: 50%;
     }
     div {
+      flex: 1;
       margin-left: 16px;
 
       strong {

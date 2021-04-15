@@ -1,64 +1,60 @@
-import React from 'react';
+import React, { useState, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 import { Title, Form, Repositories } from './styles';
 
 import LogoImg from '../../assets/logo.svg';
+import api from '../../services/api';
+
+interface Repository {
+  full_name: string;
+  description: string;
+  owner: {
+    login: string;
+    avatar_url: string;
+  };
+}
 
 const Dashboard: React.FC = () => {
+  const [newRepo, setNewRepo] = useState('');
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+
+  async function handleAddRepository(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
+    event.preventDefault();
+    const response = await api.get<Repository>(`/repos/${newRepo}`);
+    const repository = response.data;
+    setRepositories([...repositories, repository]);
+    setNewRepo('');
+  }
+
   return (
     <>
       <img src={LogoImg} alt="Github explorer" />
       <Title>Explore repositórios no Github</Title>
-      <Form>
-        <input placeholder="Digite aqui" type="text" />
+      <Form onSubmit={handleAddRepository}>
+        <input
+          value={newRepo}
+          onChange={(e) => setNewRepo(e.target.value)}
+          placeholder="Digite o nome do reposotório aqui"
+        />
         <button type="submit">Pesquisar</button>
       </Form>
-
       <Repositories>
-        <a href="test">
-          <img
-            src="https://avatars.githubusercontent.com/u/51097168?v=4"
-            alt="Lucas Matheus"
-          />
-          <div>
-            <strong>lucasMathW/project-manager</strong>
-            <p>
-              Aplicação desenvolvida para avalição de bolsa de estudos do IFAM
-            </p>
-          </div>
+        {repositories.map((repository) => (
+          <a key={repository.full_name} href="test">
+            <img
+              src={repository.owner.avatar_url}
+              alt={repository.owner.login}
+            />
+            <div>
+              <strong>{repository.full_name}</strong>
+              <p>{repository.description}</p>
+            </div>
 
-          <FiChevronRight size={20} />
-        </a>
-
-        <a href="test">
-          <img
-            src="https://avatars.githubusercontent.com/u/51097168?v=4"
-            alt="Lucas Matheus"
-          />
-          <div>
-            <strong>lucasMathW/project-manager</strong>
-            <p>
-              Aplicação desenvolvida para avalição de bolsa de estudos do IFAM
-            </p>
-          </div>
-
-          <FiChevronRight size={20} />
-        </a>
-
-        <a href="test">
-          <img
-            src="https://avatars.githubusercontent.com/u/51097168?v=4"
-            alt="Lucas Matheus"
-          />
-          <div>
-            <strong>lucasMathW/project-manager</strong>
-            <p>
-              Aplicação desenvolvida para avalição de bolsa de estudos do IFAM
-            </p>
-          </div>
-
-          <FiChevronRight size={20} />
-        </a>
+            <FiChevronRight size={20} />
+          </a>
+        ))}
       </Repositories>
     </>
   );
