@@ -82,14 +82,17 @@ export const Repositories = styled.div`
     &:hover {
       transform: translateX(10px);
     }
+
     & + a {
       margin-top: 16px;
     }
+
     img {
       width: 64px;
       height: 64px;
       border-radius: 50%;
     }
+
     div {
       flex: 1;
       margin-left: 16px;
@@ -102,6 +105,7 @@ export const Repositories = styled.div`
         color: #a8a8b3;
       }
     }
+
     svg {
       margin-left: auto;
       color: #cbcbd6;
